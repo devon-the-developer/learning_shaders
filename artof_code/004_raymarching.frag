@@ -10,7 +10,7 @@ uniform vec2 u_resolution;
 uniform float u_time;
 
 float getDist(vec3 p){
-    vec4 sphere = vec4(0.,  1.25, 6., 0.75);
+    vec4 sphere = vec4(sin(u_time),  1.25, 6. + cos(u_time)* 2., 0.75);
     float dS = length(p - sphere.xyz) - sphere.w;
     float dP = p.y;
     float d = min(dS, dP);
@@ -41,7 +41,7 @@ vec3 getNormal(vec3 p){
 
 float getLight(vec3 p){
     vec3 lightPos = vec3(0, 4, 6);
-    lightPos.xz += vec2(sin(u_time), cos(u_time)) * 2.;
+    lightPos.xz += vec2(0, 0) * 2.;
     vec3 l = normalize(lightPos-p);
     vec3 n = getNormal(p);
     //diffuse light
@@ -64,7 +64,7 @@ void main(){
 
     float dif = getLight(p);
 
-    vec3 color=vec3(dif);
+    vec3 color=vec3(0.9961, 0.9961, 0.7686) * dif;
 
     gl_FragColor = vec4(color, 1.0);
 }

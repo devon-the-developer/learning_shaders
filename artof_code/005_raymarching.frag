@@ -38,13 +38,13 @@ vec3 getNormal(vec3 p){
     return normalize(n);
 }
 
-float getLight(vec3 p){
-    vec3 lightPos = vec3(0., 3., 0.);
+vec3 getLight(vec3 p, vec3 lightPos, vec3 lightCol){
+    // vec3 lightPos = vec3(0., 3., 0.);
     vec3 lightVector = normalize(lightPos - p);
     vec3 normalVector = getNormal(p);
 
     float dif = dot(normalVector, lightVector);
-    return dif;
+    return dif * lightCol;
 }
 
 void main(){
@@ -56,9 +56,12 @@ void main(){
 
     vec3 p = rayOrigin + rayDirection * d;
 
-    float dif = getLight(p);
 
-    vec3 color = vec3(dif);
+    vec3 sunDif = getLight(p, vec3(0., 3., 0.), vec3(1.0, 0.9529, 0.7725));
+
+    vec3 randomDif = getLight(p, vec3(20., 0., -4.), vec3(0.1294, 0.3608, 0.8627));
+
+    vec3 color = sunDif + randomDif;
 
     gl_FragColor = vec4(color, 1.0);
 }

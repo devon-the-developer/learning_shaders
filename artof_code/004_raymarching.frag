@@ -40,16 +40,26 @@ vec3 getNormal(vec3 p){
 }
 
 float getLight(vec3 p){
-    vec3 lightPos = vec3(0, 4, 6);
-    lightPos.xz += vec2(0, 0) * 2.;
-    vec3 l = normalize(lightPos-p);
+    //Sunlight 
+    vec3 sunLightPos = vec3(0, 4, 6);
+    sunLightPos.xz += vec2(0, 0) * 2.;
+    vec3 l = normalize(sunLightPos-p);
     vec3 n = getNormal(p);
-    //diffuse light
     float dif = clamp(dot(n, l), 0., 1.);
     float d = rayMarch(p+n*SURFACE_DIST *2., l);
-    if(d<length(lightPos-p)) dif *= .1;
+    if(d<length(sunLightPos-p))dif*=.1;
+    
 
-    return dif;
+    //Bounce Light
+    vec3 bounceLight=vec3(0.,0.,0.);
+    vec3 bl = normalize(bounceLight- p);
+    float bounceDif = clamp(dot(n, bl), 0., 1.);
+    bounceDif /= 4.;
+    float bl_d = rayMarch(p+n*SURFACE_DIST*2.,l);
+    if(bl_d<length(bounceLight-p)) 
+
+
+    return dif + bounceDif;
 }
 
 void main(){

@@ -10,7 +10,7 @@ uniform float u_time;
 #define SURFACE_DIST 0.1
 
 float getDist(vec3 p){
-    vec4 sphere = vec4(0. , sin(u_time * 4.) + 2., 6., 1.);
+    vec4 sphere = vec4(sin(u_time) , sin(u_time * 4.) + 1.75, 5., 0.75);
     float sphereDist = length(p-sphere.xyz)-sphere.w;
     float planeDist = p.y;
     float totalDist = min(sphereDist, planeDist);
@@ -43,7 +43,9 @@ vec3 getLight(vec3 p, vec3 lightPos, vec3 lightCol){
     vec3 lightVector = normalize(lightPos - p);
     vec3 normalVector = getNormal(p);
 
-    float dif = dot(normalVector, lightVector);
+    float dif = clamp(dot(normalVector, lightVector), 0., 1.);
+    float d = rayMarch(p + normalVector *SURFACE_DIST * 2., lightVector);
+    if(d<length(lightPos-p)) dif *=.1;
     return dif * lightCol;
 }
 
@@ -57,9 +59,9 @@ void main(){
     vec3 p = rayOrigin + rayDirection * d;
 
 
-    vec3 sunDif = getLight(p, vec3(0., 3., 0.), vec3(1.0, 0.9529, 0.7725));
+    vec3 sunDif = getLight(p, vec3(5., 5., 0.), vec3(1.0, 0.9529, 0.7725));
 
-    vec3 randomDif = getLight(p, vec3(20., 0., -4.), vec3(0.1294, 0.3608, 0.8627));
+    vec3 randomDif = getLight(p, vec3(-20., 20., 0.), vec3(0.1294, 0.3608, 0.8627));
 
     vec3 color = sunDif + randomDif;
 

@@ -9,11 +9,24 @@ uniform float u_time;
 #define MAX_DIST 100.
 #define SURFACE_DIST 0.1
 
+//Smooths the collision points between two objects
+float smin( in float a, in float b, float k){
+    float h = max(k - abs(a-b), 0.0);
+    return min(a,b) - h * h / (k * 4.0);
+}
+
 float getDist(vec3 p){
-    vec4 sphere = vec4(sin(u_time) , sin(u_time * 4.) + 1.75, 5., 0.75);
+    vec4 sphere = vec4(0. , 1.5, 5., 0.75);
     float sphereDist = length(p-sphere.xyz)-sphere.w;
     float planeDist = p.y;
-    float totalDist = min(sphereDist, planeDist);
+
+    vec4 sphere2=vec4(sin(u_time)/2., sin(u_time)/1.5 + 1.5,sin(u_time) / 4. + 5.,.5);
+    float sphere2Dist = length(p-sphere2.xyz)-sphere2.w;
+
+    float spheresDist = smin(sphereDist, sphere2Dist, 0.25);
+
+    float totalDist=min(spheresDist,planeDist);
+
     return totalDist;
 }
 
